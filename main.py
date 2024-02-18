@@ -5,10 +5,17 @@ import uuid
 import os
 import re
 import ffmpeg
+import argparse
 
 lock = Lock()
 
-TOKEN='TOKEN'
+parser = argparse.ArgumentParser(description='Telegram-бот с аргументом токена')
+parser.add_argument('-t', '--token', type=str, help='Токен Telegram-бота')
+args = parser.parse_args()
+if not args.token:
+    parser.error('Аргумент токена является обязательным. (-t TOKEN или --token TOKEN)')
+
+TOKEN=args.token
 bot = telebot.TeleBot(TOKEN)
 model_size = "medium" # tiny, tiny.en, base, base.en, small, small.en, medium, medium.en, large-v1, large-v2, large-v3, or large
 model = WhisperModel(model_size, device="cpu", cpu_threads=4, compute_type="int8")
