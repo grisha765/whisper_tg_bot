@@ -6,7 +6,7 @@ import os
 import re
 import ffmpeg
 import argparse
-# lock
+
 lock = Lock()
 
 parser = argparse.ArgumentParser(description='Telegram-бот с аргументом токена')
