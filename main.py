@@ -2,7 +2,6 @@ from faster_whisper import WhisperModel
 from threading import Lock
 from argparse import ArgumentParser
 from telebot.async_telebot import AsyncTeleBot
-import telebot
 import uuid
 import os
 import glob

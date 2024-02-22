@@ -1,2 +1,18 @@
 # whisper_tg_bot
-this bot to transcribe tg voice messages using fast-whisper and telebot first you need to run: python -m venv venv &amp;&amp; venv/bin/pip install pyTelegramBotAPI faster-whisper ffmpeg-python &amp;&amp; venv/bin/python main.py
+
+### Initial Setup
+**Clone the repository**: Clone this repository using `git clone`.
+**Create Virtual Env**: Create a Python Virtual Env to download the required dependencies and libraries.
+**Download Dependencies**: Download the required dependencies into the Virtual Env using `pip`.
+```shell
+git clone https://github.com/grisha765/whisper_tg_bot.git
+cd whisper_tg_bot
+python -m venv venv
+venv/bin/pip install pyTelegramBotAPI faster-whisper ffmpeg-python
+```
+
+### Run Bot
+**Start Instance**: Start the instance from Virtualenv by entering your `TOKEN` received in @BotFather.
+```shell
+venv/bin/python main.py -t TOKEN
+```
