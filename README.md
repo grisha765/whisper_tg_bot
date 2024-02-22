@@ -6,7 +6,7 @@
 
 2. **Create Virtual Env**: Create a Python Virtual Env `venv` to download the required dependencies and libraries.
 
-3. **Download Dependencies**: Download the required dependencies into the Virtual Env using `pip`.
+3. **Download Dependencies**: Download the required dependencies into the Virtual Env `venv` using `pip`.
 
 ```shell
 git clone https://github.com/grisha765/whisper_tg_bot.git
@@ -17,7 +17,7 @@ venv/bin/pip install pyTelegramBotAPI faster-whisper ffmpeg-python
 
 ### Run Bot
 
-**Start Instance**: Start the instance from Virtualenv by entering your `TOKEN` received in @BotFather.
+**Start Instance**: Start the instance from Virtual Env `venv` by entering your `TOKEN` received in @BotFather.
 
 ```shell
 venv/bin/python main.py -t TOKEN
