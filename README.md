@@ -2,11 +2,11 @@
 
 ### Initial Setup
 
-**Clone the repository**: Clone this repository using `git clone`.
+1. **Clone the repository**: Clone this repository using `git clone`.
 
-**Create Virtual Env**: Create a Python Virtual Env to download the required dependencies and libraries.
+2. **Create Virtual Env**: Create a Python Virtual Env to download the required dependencies and libraries.
 
-**Download Dependencies**: Download the required dependencies into the Virtual Env using `pip`.
+3. **Download Dependencies**: Download the required dependencies into the Virtual Env using `pip`.
 
 ```shell
 git clone https://github.com/grisha765/whisper_tg_bot.git
