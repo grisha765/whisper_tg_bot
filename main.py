@@ -20,7 +20,6 @@ if not args.token:
     parser.error('Аргумент токена является обязательным. (-t TOKEN или --token TOKEN)')
 
 TOKEN = args.token
-#bot = telebot.TeleBot(TOKEN)
 bot = AsyncTeleBot(TOKEN)
 model_size = "medium"
 model = WhisperModel(model_size, device="cpu", cpu_threads=4, compute_type="int8")
