@@ -1,9 +1,13 @@
 # whisper_tg_bot
 
 ### Initial Setup
+
 **Clone the repository**: Clone this repository using `git clone`.
+
 **Create Virtual Env**: Create a Python Virtual Env to download the required dependencies and libraries.
+
 **Download Dependencies**: Download the required dependencies into the Virtual Env using `pip`.
+
 ```shell
 git clone https://github.com/grisha765/whisper_tg_bot.git
 cd whisper_tg_bot
@@ -12,7 +16,9 @@ venv/bin/pip install pyTelegramBotAPI faster-whisper ffmpeg-python
 ```
 
 ### Run Bot
+
 **Start Instance**: Start the instance from Virtualenv by entering your `TOKEN` received in @BotFather.
+
 ```shell
 venv/bin/python main.py -t TOKEN
 ```
