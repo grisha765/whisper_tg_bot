@@ -2,15 +2,15 @@ from faster_whisper import WhisperModel
 from threading import Lock
 from argparse import ArgumentParser
 from telebot.async_telebot import AsyncTeleBot
+from os import remove
+from concurrent.futures import ThreadPoolExecutor
 import uuid
-import os
 import glob
 import ffmpeg
 import asyncio
-import concurrent.futures
 
 lock = asyncio.Lock()
-executor = concurrent.futures.ThreadPoolExecutor()
+executor = ThreadPoolExecutor()
 
 parser = ArgumentParser(description='Telegram-бот с аргументом токена')
 parser.add_argument('-t', '--token', type=str, help='Токен Telegram-бота')
@@ -53,7 +53,7 @@ async def voice_processing(message):
         except:
             pass
 
-    os.remove(file_name_full)
+    remove(file_name_full)
 
 # видео кружки
 @bot.message_handler(content_types=['video_note'])
@@ -74,8 +74,8 @@ async def video_processing(message):
         except:
             pass
 
-    os.remove(file_name_full)
-    os.remove(audio_file_name_full)
+    remove(file_name_full)
+    remove(audio_file_name_full)
 
 try:
     asyncio.run(bot.polling(none_stop=True))
@@ -84,11 +84,11 @@ except KeyboardInterrupt:
 finally:
     mp4_files = glob.glob('/tmp/*.mp4')
     for filemp4_path in mp4_files:
-        os.remove(filemp4_path)
+        remove(filemp4_path)
     ogg_files = glob.glob('/tmp/*.ogg')
     for fileogg_path in ogg_files:
-        os.remove(fileogg_path)
+        remove(fileogg_path)
     wav_files = glob.glob('/tmp/*.wav')
     for filewav_path in wav_files:
-        os.remove(filewav_path)
+        remove(filewav_path)
 
