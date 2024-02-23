@@ -12,16 +12,22 @@ import asyncio
 lock = asyncio.Lock()
 executor = ThreadPoolExecutor()
 
-parser = ArgumentParser(description='Telegram-бот с аргументом токена')
+parser = ArgumentParser(description='Telegram-бот с аргументом токена и потоками процессора.')
 parser.add_argument('-t', '--token', type=str, help='Токен Telegram-бота')
+parser.add_argument('-cpu', '--cpu_threads', type=int, help='Потоки процессора')
+parser.add_argument('-m', '--model', type=str, help='Модель расспознователя (tiny, tiny.en, base, base.en, small, small.en, medium, medium.en, large-v1, large-v2, large-v3, or large).')
 args = parser.parse_args()
 if not args.token:
-    parser.error('Аргумент токена является обязательным. (-t TOKEN или --token TOKEN)')
+    parser.error('Аргумент токена является обязательным. (-t TOKEN или --token TOKEN), --help для дополнительной информации.')
+if not args.model:
+    parser.error('Аргумент размера модели является обязательным. (-m MODEL_SIZE или --model MODEL_SIZE), --help для дополнительной информации.')
+if not args.cpu_threads or args.cpu_threads <= 0:
+    parser.error("Неправильный формат для аргумента -cpu, ожидается положительное число, --help для дополнительной информации.")
 
 TOKEN = args.token
 bot = AsyncTeleBot(TOKEN)
-model_size = "medium"
-model = WhisperModel(model_size, device="cpu", cpu_threads=4, compute_type="int8")
+model_size = args.model
+model = WhisperModel(model_size, device="cpu", cpu_threads=args.cpu_threads, compute_type="int8")
 
 def recognise_sync(path):
     segments, info = model.transcribe(path, beam_size=5, language="ru", vad_filter=True)

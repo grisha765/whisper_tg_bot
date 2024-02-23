@@ -17,8 +17,8 @@ venv/bin/pip install pyTelegramBotAPI faster-whisper ffmpeg-python
 
 ### Run Bot
 
-**Start Instance**: Start the instance from Virtual Env `venv` by entering your `TOKEN` received in @BotFather.
+**Start an Instance**: Start an instance from the `venv` virtual environment by entering your `TOKEN` using the `-t` argument received from @BotFather and also specifying the number of threads you want to allocate using the `-cpu` argument instance, and the size of the bot model using `-m`.
 
 ```shell
-venv/bin/python main.py -t TOKEN
+venv/bin/python main.py -t TOKEN -cpu CPU_THREADS -m MODEL_SIZE
 ```
