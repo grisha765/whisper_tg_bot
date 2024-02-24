@@ -11,6 +11,7 @@ import asyncio
 
 lock = asyncio.Lock()
 executor = ThreadPoolExecutor()
+processing_message = {}
 
 parser = ArgumentParser(description='Telegram-бот с аргументом токена и потоками процессора.')
 parser.add_argument('-t', '--token', type=str, help='Токен Telegram-бота')
@@ -41,7 +42,6 @@ async def recognise_async(path):
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(executor, recognise_sync, path)
 
-
 # голосовые сообщения
 @bot.message_handler(content_types=['voice'])
 async def voice_processing(message):
@@ -54,9 +54,14 @@ async def voice_processing(message):
     sent_message = await bot.reply_to(message, f"Идёт расшифровка с помощью Whisper {model_size}...")
     async with lock:
         text = await recognise_async(file_name_full)
-        try:
-            await bot.edit_message_text(chat_id=message.chat.id, message_id=sent_message.message_id, text="Текст:" + text)
-        except:
+        if not processing_message.get(message.chat.id):
+            processing_message[message.chat.id] = True
+            try:
+                await bot.edit_message_text(chat_id=message.chat.id, message_id=sent_message.message_id, text="Текст:" + text)
+            except:
+                pass
+            processing_message.pop(message.chat.id)
+        else:
             pass
 
     remove(file_name_full)
