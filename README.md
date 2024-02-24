@@ -12,7 +12,7 @@
 git clone https://github.com/grisha765/whisper_tg_bot.git
 cd whisper_tg_bot
 python3 -m venv venv
-venv/bin/pip3 install pyTelegramBotAPI faster-whisper ffmpeg-python
+venv/bin/pip3 install pyTelegramBotAPI faster-whisper ffmpeg-python aiohttp
 ```
 
 ### Run Bot
