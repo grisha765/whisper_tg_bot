@@ -1,17 +1,17 @@
 from faster_whisper import WhisperModel
 from threading import Lock
 from argparse import ArgumentParser
-from telebot.async_telebot import AsyncTeleBot
-from os import remove
 from concurrent.futures import ThreadPoolExecutor
+from pyrogram import Client, filters
+import subprocess
 import uuid
 import glob
 import ffmpeg
 import asyncio
+import tempfile
 
-lock = asyncio.Lock()
 executor = ThreadPoolExecutor()
-processing_message = {}
+lock = asyncio.Lock()
 
 parser = ArgumentParser(description='Telegram-бот с аргументом токена и потоками процессора.')
 parser.add_argument('-t', '--token', type=str, help='Токен Telegram-бота')
@@ -25,10 +25,23 @@ if not args.model:
 if not args.cpu_threads or args.cpu_threads <= 0:
     parser.error("Неправильный формат для аргумента -cpu, ожидается положительное число, --help для дополнительной информации.")
 
-TOKEN = args.token
-bot = AsyncTeleBot(TOKEN)
+api_id = 1
+api_hash = 'b6b154c3707471f5339bd661645ed3d6'
+bot_token = args.token
+app = Client("my_bot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
+
 model_size = args.model
 model = WhisperModel(model_size, device="cpu", cpu_threads=args.cpu_threads, compute_type="int8")
+
+def get_last_commit_hash():
+    try:
+        result = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], stdout=subprocess.PIPE)
+        commit_hash = result.stdout.decode('utf-8').strip()
+        return commit_hash
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+commit_hash = get_last_commit_hash()
 
 def recognise_sync(path):
     segments, info = model.transcribe(path, beam_size=5, language="ru", vad_filter=True)
@@ -42,64 +55,34 @@ async def recognise_async(path):
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(executor, recognise_sync, path)
 
-# голосовые сообщения
-@bot.message_handler(content_types=['voice'])
-async def voice_processing(message):
-    filename = str(uuid.uuid4())
-    file_name_full = "/tmp/" + filename + ".ogg"
-    file_info = await bot.get_file(message.voice.file_id)
-    downloaded_file = await bot.download_file(file_info.file_path)
-    with open(file_name_full, 'wb') as new_file:
-        new_file.write(downloaded_file)
-    sent_message = await bot.reply_to(message, f"Идёт расшифровка с помощью Whisper {model_size}...")
-    async with lock:
-        text = await recognise_async(file_name_full)
-        if not processing_message.get(message.chat.id):
-            processing_message[message.chat.id] = True
-            try:
-                await bot.edit_message_text(chat_id=message.chat.id, message_id=sent_message.message_id, text="Текст:" + text)
-            except:
-                pass
-            processing_message.pop(message.chat.id)
-        else:
-            pass
+@app.on_message(filters.command("help"))
+async def help_command(client, message):
+    help_message = await message.reply(f"Whisper Telegram Bot {commit_hash}")
+    await asyncio.sleep(5)
+    await help_message.delete()
 
-    remove(file_name_full)
+# голосовые сообщения
+@app.on_message(filters.voice)
+async def voice(client, message):
+    if message.voice:
+        print_message = await message.reply(f"Идёт расшифровка с помощью Whisper {model_size}...")
+        async with lock:
+            with tempfile.NamedTemporaryFile(delete=True) as temp_file:
+                await message.download(file_name=temp_file.name)
+                await print_message.edit_text(f"Текст:{await recognise_async(temp_file.name)}")
+            temp_file.close()
 
 # видео кружки
-@bot.message_handler(content_types=['video_note'])
-async def video_processing(message):
-    filename = str(uuid.uuid4())
-    file_name_full = "/tmp/" + filename + ".mp4"
-    file_info = await bot.get_file(message.video_note.file_id)
-    downloaded_file = await bot.download_file(file_info.file_path)
-    with open(file_name_full, 'wb') as new_file:
-        new_file.write(downloaded_file)
-    sent_message = await bot.reply_to(message, f"Идёт расшифровка с помощью Whisper {model_size}...")
-    audio_file_name_full = "/tmp/" + filename + ".wav"
-    ffmpeg.input(file_name_full).output(audio_file_name_full, loglevel='quiet').run(overwrite_output=True)
-    async with lock:
-        text = await recognise_async(audio_file_name_full)
-        try:
-            await bot.edit_message_text(chat_id=message.chat.id, message_id=sent_message.message_id, text="Текст:" + text)
-        except:
-            pass
-
-    remove(file_name_full)
-    remove(audio_file_name_full)
-
-try:
-    asyncio.run(bot.polling(none_stop=True))
-except KeyboardInterrupt:
-    print("Program terminated by user.")
-finally:
-    mp4_files = glob.glob('/tmp/*.mp4')
-    for filemp4_path in mp4_files:
-        remove(filemp4_path)
-    ogg_files = glob.glob('/tmp/*.ogg')
-    for fileogg_path in ogg_files:
-        remove(fileogg_path)
-    wav_files = glob.glob('/tmp/*.wav')
-    for filewav_path in wav_files:
-        remove(filewav_path)
-
+@app.on_message(filters.video_note)
+async def video_note(client, message):
+    if message.video_note:
+        print_message = await message.reply(f"Идёт расшифровка с помощью Whisper {model_size}...")
+        async with lock:
+            with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp_file_mp4:
+                await message.download(file_name=temp_file_mp4.name)
+                with tempfile.NamedTemporaryFile(suffix=".ogg", delete=True) as temp_file_ogg:
+                    ffmpeg.input(temp_file_mp4.name).output(temp_file_ogg.name, loglevel='quiet').run(overwrite_output=True, capture_stderr=True)
+                    await print_message.edit_text(f"Текст:{await recognise_async(temp_file_ogg.name)}")
+                temp_file_ogg.close()
+            temp_file_mp4.close()
+app.run()
