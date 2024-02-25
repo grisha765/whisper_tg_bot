@@ -12,7 +12,7 @@
 git clone https://github.com/grisha765/whisper_tg_bot.git
 cd whisper_tg_bot
 python3 -m venv venv
-venv/bin/pip3 install pyTelegramBotAPI faster-whisper ffmpeg-python aiohttp
+venv/bin/pip3 install pyrogram tgcrypto faster-whisper ffmpeg-python aiohttp
 ```
 
 ### Run Bot
@@ -22,3 +22,15 @@ venv/bin/pip3 install pyTelegramBotAPI faster-whisper ffmpeg-python aiohttp
 ```shell
 venv/bin/python3 main.py -t TOKEN -cpu CPU_THREADS -m MODEL_SIZE
 ```
+
+### Arguments
+
+-t, --token: Required. Specify the Telegram bot `token` received from `@BotFather`.
+-cpu, --cpu_threads: Required. Specify the number of CPU threads to allocate.
+-m, --model: Required. Specify the size of the Whisper model to use `(e.g., tiny, small, medium, large)`.
+
+### Features
+
+1. Transcribes `voice messages` and `video notes` into text using the Whisper model.
+2. Supports multiple Whisper model sizes for transcription.
+3. Utilizes multithreading for efficient processing of `voice messages` and video notes.
