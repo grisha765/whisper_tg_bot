@@ -3,9 +3,7 @@
 ### Initial Setup
 
 1. **Clone the repository**: Clone this repository using `git clone`.
-
 2. **Create Virtual Env**: Create a Python Virtual Env `venv` to download the required dependencies and libraries.
-
 3. **Download Dependencies**: Download the required dependencies into the Virtual Env `venv` using `pip`.
 
 ```shell
