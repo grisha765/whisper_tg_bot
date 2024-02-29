@@ -1,5 +1,5 @@
 # whisper_tg_bot
-
+Telegram bot that utilizes the Whisper model for transcription of voice messages and video notes. It is designed to run with arguments such as token, CPU threads, and model size. The bot uses Pyrogram library for interaction with Telegram, and it employs asyncio and threading for asynchronous and parallel processing.
 ### Initial Setup
 
 1. **Clone the repository**: Clone this repository using `git clone`.
