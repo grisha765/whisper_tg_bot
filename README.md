@@ -23,9 +23,9 @@ venv/bin/python3 main.py -t TOKEN -cpu CPU_THREADS -m MODEL_SIZE
 
 ### Arguments
 
--t, --token: Required. Specify the Telegram bot `token` received from `@BotFather`.
--cpu, --cpu_threads: Required. Specify the number of CPU threads to allocate.
--m, --model: Required. Specify the size of the Whisper model to use `(e.g., tiny, small, medium, large)`.
+1. **-t, --token**: Required. Specify the Telegram bot `token` received from `@BotFather`.
+2. **-cpu, --cpu_threads**: Required. Specify the number of CPU threads to allocate.
+3. **-m, --model: Required**. Specify the size of the Whisper model to use `(e.g., tiny, small, medium, large)`.
 
 ### Features
 
