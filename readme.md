@@ -37,6 +37,19 @@ python3 -m venv .venv
     #large-v3, or large
     ```
 
+- Deploy in container:
+    ```bash
+    podman pull ghcr.io/grisha765/whisper_tg_bot:latest
+    mkdir -p $HOME/whisper_cache/ && \
+    podman run \
+    --name whisper_tg_bot \
+    -v $HOME/whisper_cache/:/root/.cache/huggingface/:z \
+    -e TG_TOKEN="your_telegram_bot_token" \
+    -e MODEL_SIZE="tiny" \
+    -e CPU_THREADS="4" \
+    ghcr.io/grisha765/whisper_tg_bot:latest
+    ```
+
 ### Features
 
 1. Transcribes `voice messages` and `video notes` into text using the Whisper model.
