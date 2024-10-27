@@ -31,11 +31,15 @@ async def recognise_async(path):
 @app.on_message(filters.voice)
 async def voice(_, message):
     if message.voice:
-        print_message = await message.reply(f"Text recognition is in progress using: Whisper {model_size}...")
+        print_message = await message.reply(f"Whisper {model_size}: Text recognition is in progress...")
         async with lock:
             with tempfile.NamedTemporaryFile(delete=True) as temp_file:
                 await message.download(file_name=temp_file.name)
-                await print_message.edit_text(f"Text:{await recognise_async(temp_file.name)}")
+                try:
+                    await print_message.edit_text(f"Text:{await recognise_async(temp_file.name)}")
+                except:
+                    await print_message.edit_text(f"Whisper {model_size}: Text recognition is not successful.")
+                    logging.warning(f"Whisper {model_size}: Text recognition is not successful.")
             temp_file.close()
 
 @app.on_message(filters.video_note)
