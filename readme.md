@@ -41,7 +41,7 @@ python3 -m venv .venv
     ```bash
     podman pull ghcr.io/grisha765/whisper_tg_bot:latest
     mkdir -p $HOME/whisper_cache/ && \
-    podman run \
+    podman run --tmpfs /tmp \
     --name whisper_tg_bot \
     -v $HOME/whisper_cache/:/root/.cache/huggingface/:z \
     -e TG_TOKEN="your_telegram_bot_token" \
