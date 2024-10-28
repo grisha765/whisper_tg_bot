@@ -51,7 +51,11 @@ async def video_note(_, message):
                 await message.download(file_name=temp_file_mp4.name)
                 with tempfile.NamedTemporaryFile(suffix=".ogg", delete=True) as temp_file_ogg:
                     ffmpeg.input(temp_file_mp4.name).output(temp_file_ogg.name, loglevel='quiet').run(overwrite_output=True, capture_stderr=True)
-                    await print_message.edit_text(f"Text:{await recognise_async(temp_file_ogg.name)}")
+                    try:
+                        await print_message.edit_text(f"Text:{await recognise_async(temp_file_ogg.name)}")
+                    except:
+                        await print_message.edit_text(f"Whisper {model_size}: Text recognition is not successful.")
+                        logging.warning(f"Whisper {model_size}: Text recognition is not successful.")
                 temp_file_ogg.close()
             temp_file_mp4.close()
 
