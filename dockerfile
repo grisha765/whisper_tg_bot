@@ -15,4 +15,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 ENV PYTHONUNBUFFERED=1
 
+ENV SESSIONS_PATH=/app/sessions
+
 CMD ["python", "main.py"]
