@@ -7,6 +7,7 @@ async def video_note(message, lock, recognise_async):
     if message.video_note:
         print_message = await message.reply(f"Text recognition is in progress using: Whisper {Config.model_size}...")
         async with lock:
+            logging.debug(f"Message {message.id}: Start recognition...")
             with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp_file_mp4:
                 await message.download(file_name=temp_file_mp4.name)
                 with tempfile.NamedTemporaryFile(suffix=".ogg", delete=True) as temp_file_ogg:

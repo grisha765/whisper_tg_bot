@@ -7,6 +7,7 @@ async def voice(message, lock, recognise_async):
     if message.voice:
         print_message = await message.reply(f"Whisper {Config.model_size}: Text recognition is in progress...")
         async with lock:
+            logging.debug(f"Message {message.id}: Start recognition...")
             with tempfile.NamedTemporaryFile(delete=True) as temp_file:
                 await message.download(file_name=temp_file.name)
                 try:
