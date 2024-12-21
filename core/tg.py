@@ -1,4 +1,5 @@
 from pyrogram import Client, filters
+from pyrogram.enums import ChatType
 
 import asyncio
 
@@ -30,20 +31,26 @@ async def handle_video_note(_, message):
 @user.on_message(filters.voice & filters.me)
 async def handle_user_audio(client, message):
     if bot_id:
-        async for member in client.get_chat_members(message.chat.id):
-            if member.user.id == bot_id[0]:
-                logging.warning(f"Bot is in the chat {message.chat.id}. Userbot will ignore this voice message.")
-                return
+        if message.chat.type in [ChatType.GROUP, ChatType.SUPERGROUP, ChatType.CHANNEL]:
+            async for member in client.get_chat_members(message.chat.id):
+                if member.user.id == bot_id[0]:
+                    logging.warning(f"Bot is in the chat {message.chat.id}. Userbot will ignore this voice message.")
+                    return
+        else:
+            logging.debug(f"Chat type {message.chat.type} does not support member listing. Skipping bot check.")
     logging.debug("user: voice message recognition...")
     await voice(message, lock, recognise_async)
 
 @user.on_message(filters.video_note & filters.me)
 async def handle_user_video_note(client, message):
     if bot_id:
-        async for member in client.get_chat_members(message.chat.id):
-            if member.user.id == bot_id[0]:
-                logging.warning(f"Bot is in the chat {message.chat.id}. Userbot will ignore this video note.")
-                return
+        if message.chat.type in [ChatType.GROUP, ChatType.SUPERGROUP, ChatType.CHANNEL]:
+            async for member in client.get_chat_members(message.chat.id):
+                if member.user.id == bot_id[0]:
+                    logging.warning(f"Bot is in the chat {message.chat.id}. Userbot will ignore this video note.")
+                    return
+        else:
+            logging.debug(f"Chat type {message.chat.type} does not support member listing. Skipping bot check.")
     logging.debug("user: video note recognition...")
     await video_note(message, lock, recognise_async)
 
