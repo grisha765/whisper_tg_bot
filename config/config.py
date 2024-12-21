@@ -2,11 +2,13 @@ import os
 
 class Config:
     log_level: str = "INFO"
+    mode: str = "bot"
     tg_id: str = '1'
     tg_hash: str = 'b6b154c3707471f5339bd661645ed3d6'
     tg_token: str = 'None'
     model_size: str = 'tiny' #tiny, tiny.en, base, base.en, small, small.en, medium, medium.en, large-v1, large-v2, large-v3, or large
     cpu_threads: str = '4'
+    sessions_path: str = './'
     
     @classmethod
     def load_from_env(cls):
