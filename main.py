@@ -22,5 +22,4 @@ async def main():
 
 
 if __name__ == '__main__':
-    if Config.tg_token != 'None':
-        asyncio.run(main())
+    asyncio.run(main())
