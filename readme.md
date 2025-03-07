@@ -10,15 +10,16 @@ Telegram bot and user bot that utilizes the Whisper model for transcription of v
 ```shell
 git clone https://github.com/grisha765/whisper_tg_bot.git
 cd whisper_tg_bot
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt 
+python -m venv .venv
+.venv/bin/python -m pip install uv
+.venv/bin/python -m uv sync
 ```
 
 ### Deploy
 
 - Run the bot:
     ```bash
-    TG_TOKEN="your_telegram_bot_token" CPU_THREADS="4" MODEL_SIZE="tiny" .venv/bin/python main.py
+    TG_TOKEN="your_telegram_bot_token" CPU_THREADS="4" MODEL_SIZE="tiny" uv run main.py
     ```
 
 - Other working env's:
