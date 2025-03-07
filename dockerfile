@@ -1,17 +1,23 @@
-FROM python:3.12-slim
-
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    libffi-dev \
-    ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS builder
 
 WORKDIR /app
 
+COPY pyproject.toml uv.lock /app
+
+RUN uv sync --no-cache
+
+
+FROM python:3.12-slim-bookworm AS main
+
+WORKDIR /app
+
+COPY --from=builder /app/.venv /app/.venv
+
 COPY . /app
 
-RUN pip install --no-cache-dir -r requirements.txt
+ENV PATH="/app/.venv/bin:$PATH"
+
+ENV PYTHONDONTWRITEBYTECODE=1
 
 ENV PYTHONUNBUFFERED=1
 
