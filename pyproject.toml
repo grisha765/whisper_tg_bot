@@ -1,0 +1,12 @@
+[project]
+name = "whisper-tg-bot"
+version = "0.1.0"
+description = "this bot to transcribe tg voice messages."
+readme = "readme.md"
+requires-python = ">=3.12"
+dependencies = [
+    "faster-whisper>=1.1.1",
+    "ffmpeg-python>=0.2.0",
+    "pyrofork>=2.3.58",
+    "tgcrypto-pyrofork>=1.2.7",
+]
